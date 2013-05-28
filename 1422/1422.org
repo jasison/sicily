@@ -1,0 +1,62 @@
+#+TITLE:     sicily 1422 Table Tennis
+#+AUTHOR:    yuanhang zheng
+#+EMAIL:     zhengyhn@gmail.com
+#+DATE:      2013-05-28 Tue
+
+* Why?
+我已经很老了，本来不应该来刷这种题的了，但是由于面试时被严重鄙视，得回来恶补一下，
+于是找了这道传说中的水题来做。
+* 想法
+真不想写这个总结，因为这题我是看人家的代码的，很羞愧。。贴代码的大神直接在注释里
+面说这是水题，连解释都不写，我却还在那里纠结。。什么时候才能修得成果，我不想当码
+农啊！！好吧，还是把学习到的写下来吧。
+* 分析
+题目要求计算出来最终掉到哪个口袋以及反弹的次数。如果有动手在纸上模拟一下的话，
+会发现，这个模拟过程就是求最大公约数中的更相减损术，以样例m = 6, n = 10为例，
+最大公约数为2, 接触到边长为m的边的次数为6 / 2 = 3，接触到边长为n的次数为
+10 / 2 = 5，包括最开始以及最后掉到口袋里面。则反弹次数为除去最开始和最后，
+为5 + 3 - 2 = 6。
+
+那怎么知道最后掉在哪个口袋里面呢？可以想到，对于B，由于和A是在不同的x轴，在
+相同的y轴，则接触边长为m的次数肯定为偶数，接触边长为n的次数肯定为奇数。同理，
+可以判断C和D。
+* 代码
+#+BEGIN_SRC C
+#include <stdio.h>
+
+int gcd(int m, int n)
+{
+    return m ? gcd(n % m, m) : n;
+}
+
+int is_odd(int a)
+{
+    return a & 1;
+}
+
+int main(int argc, char *argv[])
+{
+    int m, n, g, nhits, mhits;
+    char pocket;
+
+    while (scanf("%d %d", &m, &n) != EOF) {
+	g = gcd(m, n);
+	nhits = n / g;
+	mhits = m / g;
+	if (!is_odd(nhits) && !is_odd(mhits)) {
+	    pocket = 'A';
+	} else if (is_odd(nhits) && !is_odd(mhits)) {
+	    pocket = 'B';
+	} else if (is_odd(nhits) && is_odd(mhits)) {
+	    pocket = 'C';
+	} else {
+	    pocket = 'D';
+	}
+	printf("%c %d\n", pocket, nhits + mhits - 2);
+    }
+    
+    return 0;
+}
+#+END_SRC
+
+
